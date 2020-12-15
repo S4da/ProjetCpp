@@ -11,6 +11,7 @@ class SuperSoldat: public Fantassin{
         ~SuperSoldat();
         void setHp(int vie) { Fantassin::setHp(vie);};
         std::string getUnit() { return " _SS_ ";};
+        void action3(int pos, std::vector<Unite*> &champ);
 };
 
  #endif

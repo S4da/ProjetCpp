@@ -1,6 +1,7 @@
 #ifndef UNITE_H
 #define UNITE_H
 
+#include<vector>
 
 class Unite{
     private:
@@ -18,10 +19,10 @@ class Unite{
         int getPrix() {return prix;};
         int getId() {return numJoueur;};
         void damage(int dmg) { pv-=dmg;};
-        void action1();
-        void action2();
-        void action3();
-        void attaque(Unite& ennemis)
+        virtual void action1(int pos, std::vector<Unite*> &champ){};
+        virtual void action2(int pos, std::vector<Unite*> &champ){};
+        virtual void action3(int pos, std::vector<Unite*> &champ){};
+        void attaque(Unite* ennemi);
         
 };
 

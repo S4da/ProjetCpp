@@ -11,4 +11,8 @@ Unite::Unite(int prix, int pv, int rangeMin,int rangeMax,int atk,int numJoueur){
     this->numJoueur=numJoueur;
 }
 
+void Unite::attaque(Unite* ennemi){
+    ennemi->damage(this->atk);
+}
+
 Unite::~Unite(){}

@@ -9,6 +9,9 @@ class Archer: public Unite{
         Archer(int id);
         ~Archer();
         std::string getUnit() { return " _A_ ";};
+        void action1(int pos, std::vector<Unite*> &champ);
+        void action2(int pos, std::vector<Unite*> &champ);
+        void action3(int pos, std::vector<Unite*> &champ);
 };
 
  #endif
