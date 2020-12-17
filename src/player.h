@@ -2,13 +2,13 @@
 #define PLAYER_H
 #include<vector>
 #include<cstdlib>
-#include "unite.h"
+//#include "unite.h"
 
 class Player{
     private:
         int vie;
         int balance;
-        std::vector<Unite*> champ;
+        //std::vector<Unite*> champ;
         int id=0;
     public:
         Player(int i);
@@ -19,6 +19,9 @@ class Player{
         int getBalance() { return balance;};
         int getId() { return id;};
         void payer(int montant) { balance-=montant;};
+        void damage(int montant) { vie-=montant;};
+        bool operator==(Player* player) { return this->getId()==player->getId();};
+        bool operator!=(Player* player) { return this->getId()!=player->getId();};
         //virtual void joue();
 };
 

@@ -7,12 +7,12 @@ class Catapulte: public Unite{
     private:
         bool act1Fait=false;
     public:
-        Catapulte(int id);
+        Catapulte(Player* player);
         ~Catapulte();
-        std::string getUnit() { return " _C_ ";};
-        void action1(int pos, std::vector<Unite*> &champ);
-        //void action2(int pos, std::vector<Unite*> &champ);
-        void action3(int pos, std::vector<Unite*> &champ);
+        std::string getUnit() { return "C";};
+        void action1(int pos, std::vector<Unite*> &champ, Player* ennemi);
+        void action2(int pos, std::vector<Unite*> &champ,Player* ennemi){};
+        void action3(int pos, std::vector<Unite*> &champ, Player* ennemi);
 };
 
  #endif

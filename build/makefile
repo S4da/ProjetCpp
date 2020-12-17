@@ -1,6 +1,6 @@
 
 CXX=g++
-CXXFLAGS= -Wall -Wextra
+CXXFLAGS= -Wall -Wextra -lncurses
 
 %.o: ../src/%.cpp
 	$(CXX) $(CXXFLAGS) $< -c -o $@

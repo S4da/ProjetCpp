@@ -1,25 +1,38 @@
 #include <iostream>
 #include <cstdlib>
-#include "unite.h"
 #include "fantassin.h"
-#include "player.h"
+#include "super_soldat.h"
 
-Fantassin::Fantassin(int id): Unite(10,10,1,1,4,id)
+Fantassin::Fantassin(Player* player): Unite(10,10,1,1,4,player)
 {}
 
-void Fantassin::action1(int pos, std::vector<Unite*> &champ){
-    if (this->getId()!=champ.at(pos+1)->getId()){
-        this->attaque(champ.at(pos+1));
-        act1Fait=true;
+void Fantassin::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
+    act1Fait=false;
+    int dist=2;
+    int pas=1;
+    if (champ.at(pos)->getPlayer()->getId()>ennemi->getId()){
+        dist=11;
+        pas=-1;
     } 
+    if (pos==champ.size()-dist) {
+        ennemi->damage(this->getAtk());
+        act1Fait=true;
+    }
+    else if (champ.at(pos+pas)!=nullptr) {
+        if (this->getPlayer()!=champ.at(pos+pas)->getPlayer()){
+            this->attaque(champ.at(pos+pas));
+            if (champ.at(pos+pas)->getHp()<=0) {
+                champ.at(pos+pas)=nullptr;
+                champ.at(pos)=new SuperSoldat(champ.at(pos)->getHp(),champ.at(pos)->getPlayer());
+            }
+            act1Fait=true;
+        }
+    }
+        
 }
 
-void Fantassin::action2(int pos, std::vector<Unite*> &champ){
-    
-}
-
-void Fantassin::action3(int pos, std::vector<Unite*> &champ){
-    
+void Fantassin::action3(int pos, std::vector<Unite*> &champ, Player* ennemi){
+    if (!act1Fait) action1(pos,champ,ennemi);
 }
 
 Fantassin::~Fantassin(){}

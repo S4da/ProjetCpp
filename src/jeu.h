@@ -11,6 +11,9 @@ class Jeu{
         std::vector<Unite*> champ;
         const int tourMax;
         Player *active_player;
+        Player *inactive_player;
+        Player* p1;
+        Player* p2;
         int remuneration=8;
     public:
         Jeu();
@@ -21,6 +24,9 @@ class Jeu{
         void lancerJeu(Player *p1);
         void afficherMap();
         void achat();
+        void lanceAction1();
+        void lanceAction2();
+        void lanceAction3();
 };
 
  #endif

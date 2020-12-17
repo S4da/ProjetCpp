@@ -1,17 +1,17 @@
 #ifndef ARCHER_H
 #define ARCHER_H
 #include "player.h"
+#include "unite.h"
 
 class Archer: public Unite{
     private:
         
     public:
-        Archer(int id);
+        Archer(Player* player);
         ~Archer();
-        std::string getUnit() { return " _A_ ";};
-        void action1(int pos, std::vector<Unite*> &champ);
-        void action2(int pos, std::vector<Unite*> &champ);
-        void action3(int pos, std::vector<Unite*> &champ);
+        std::string getUnit() { return "A";};
+        void action1(int pos, std::vector<Unite*> &champ, Player* ennemi);
+        void action3(int pos, std::vector<Unite*> &champ, Player* ennemi);
 };
 
  #endif
