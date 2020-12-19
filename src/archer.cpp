@@ -2,20 +2,21 @@
 #include <cstdlib>
 #include "archer.h"
 
+
 Archer::Archer(Player* player): Unite(12,8,1,3,3,player)
-{}
+{
+    setType("Archer");
+}
 
 void Archer::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
     int dist=1;
-    int pas=1;
     int i=0;
+    int taille_champ=champ.size();
     bool ennemiTrouve=false;
     if (champ.at(pos)->getPlayer()->getId()>ennemi->getId()){
         dist=12;
-        pas=-1;
         for (i=pos-getRangeMin();i>=pos-getRangeMax();i--){
-            if (i==champ.size()-dist){
-                ennemiTrouve=true;
+            if (i==taille_champ-dist){
                 break;
             }else if (champ.at(i)!=nullptr){
                 if (this->getPlayer()!=champ.at(i)->getPlayer()){
@@ -27,8 +28,7 @@ void Archer::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
     }
     else{
         for (i=pos+getRangeMin();i<=pos+getRangeMax();i++){
-            if (i==champ.size()-dist){
-                ennemiTrouve=true;
+            if (i==taille_champ-dist){
                 break;
             }else if (champ.at(i)!=nullptr){
                 if (this->getPlayer()!=champ.at(i)->getPlayer()){
@@ -38,19 +38,14 @@ void Archer::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
             }
         }
     }
-    if (i==champ.size()-dist) {
-                ennemi->damage(this->getAtk());
-    }
-    else if (ennemiTrouve)
+    if (ennemiTrouve)
     {   
+        afficherActionAtk(pos);
         this->attaque(champ.at(i));
-        if (champ.at(i)->getHp()<=0) champ.at(i)=nullptr;
+    }else if (i==taille_champ-dist) {
+        afficherActionAtk(pos);
+        ennemi->damage(this->getAtk());
     }
 }
 
-
-
-void Archer::action3(int pos, std::vector<Unite*> &champ, Player* ennemi){
-    
-}
 Archer::~Archer(){}

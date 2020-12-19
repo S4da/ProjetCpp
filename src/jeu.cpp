@@ -39,7 +39,8 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
     int cpt=-1;
     active_player=p1;
     inactive_player=p2;
-    while(!p1->aPerdu() && !p2->aPerdu() && cpt<=2*tourMax){
+
+    while(cpt<=2*tourMax){
         cpt++;
         if (cpt%2==0){
             active_player=p1;
@@ -51,30 +52,40 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
         }
         active_player->addOr(remuneration);
         system("clear");
-        
         active_player->print();
         afficherMap();
+
         if (cpt==0) achat();
         else{
             lanceAction1();
             lanceAction2();
             lanceAction3();
+            checkMort();
+            std::cout<<std::endl<<std::endl;
+            afficherMap();
+            if (p1->aPerdu() || p2->aPerdu() || fin) break;
             achat();
         }
-        // deroulement du jeu
+    }
+    if (p1->aPerdu() || p2->aPerdu()){
+        std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
+        std::string fin;
+        std::cin>>fin;
+    } else if (fin){
+        /* faire des trucs*/
     }
 }
 
 
 
 void Jeu::lancerJeu(Player *p1){
-
+    active_player=p1;
 }
 
 void Jeu::achat(){
-    int tour=1;
-    if (active_player->getId()==1) tour=1;
-    else tour=10;
+    int tour=0;
+    if (active_player->getId()<inactive_player->getId()) tour=0;
+    else tour=taille_champ-1;
     std::cout<<"\n\n";
     Unite* choix;
     if (champ.at(tour)!=nullptr) {
@@ -84,17 +95,30 @@ void Jeu::achat(){
     }else {
         int choixAchat=0;
         bool peutAcheter=false;
+        
         while (!peutAcheter){
-            std::cout<<" Que voulez vous acheter ? \n 1) Fantassin-10 Po\t\t 2) Archer-12 Po\t\t 3) Catapultes-20 Po \t\t 4) rien"<<std::endl;
-            std::cin>>choixAchat;
+            std::string entree="";
+            std::cout<<" Que voulez vous acheter ? \n 1) Fantassin-10 Po\t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder"<<std::endl;
+            std::cin>>entree;
+            try{
+                choixAchat=std::stoi(entree);
+            }catch(...){
+                choixAchat=-1;
+            }
             
-            while (choixAchat<1 || choixAchat>4)
+            while (choixAchat<1 || choixAchat>5)
             {
                 std::cout<<" ! Vous devez choisir entre 1, 2 et 3 !"<<std::endl;
-                std::cout<<" 1) Fantassin-10 Po \t\t 2) Archer-12 Po\t\t 3) Catapultes-20 Po \t\t 4) rien"<<std::endl;
-                std::cin>>choixAchat;
+                std::cout<<" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder"<<std::endl;
+                std::cin>>entree;
+                try{
+                    choixAchat=std::stoi(entree);
+                }catch(...){
+                    choixAchat=-1;
+                }
             }
             if (choixAchat==4) { break;}
+            else if (choixAchat==5) { /* faire des truc */ fin=true; break;}
             else {
                 if (choixAchat==1){ //faire en sorte de check la thune et prelever
                 choix=new Fantassin(active_player);
@@ -121,7 +145,7 @@ void Jeu::afficherMap(){
     std::string pv="";
     std::string vide=" ___ ";
 
-    for (int i=1;i<taille_champ-1;i++){
+    for (int i=0;i<taille_champ;i++){
         if (champ.at(i)==nullptr) {
             res+=vide;
             pv+= "     ";
@@ -130,42 +154,60 @@ void Jeu::afficherMap(){
             if (champ.at(i)->getPlayer()==p1){
                 res+= " _"+champ[i]->getUnit()+"- ";
             }else res+= " -"+champ[i]->getUnit()+"_ ";
-            if (champ.at(i)->getHp()!=0) pv+= " "+std::to_string(champ.at(i)->getHp())+" ";
-            else pv+= "     ";
+            if (champ.at(i)->getHp()!=0) {
+                if (champ.at(i)->getHp()>=10) pv+= "  "+std::to_string(champ.at(i)->getHp())+" ";
+                else pv+= "  "+std::to_string(champ.at(i)->getHp())+"  ";
+            }
         }
     }
 
-    std::string retour =    " |\\/\\/\\/|" "\t\t\t\t\t\t\t" " |\\/\\/\\/| \n"    
-                            " |      | "  "\t\t\t\t\t\t\t"  " |      | \n"
-                            " |      | "  "\t\t\t\t\t\t\t"  " |      | \n"
-                            " |  P1  |   "   + res +      "\t |  P2  | \n"
-                            "            "+pv;
+    std::string retour =    " |\\/\\/\\/|""\t\t\t\t\t\t\t " "|\\/\\/\\/| \n"    
+                            " |      | "  "\t\t\t\t\t\t\t "  "|      | \n"
+                            " |      | "  "\t\t\t\t\t\t\t "  "|      | \n"
+                            " |  P1 "   + res +      " P2  | \n"
+                            "       "+pv;
     
     std::cout<<retour;
 }
 
 void Jeu::lanceAction1(){
-    for (int i=1;i<taille_champ-1;i++){
-        if (champ.at(i)!=nullptr){
-            if (champ.at(i)->getPlayer()->getId()==active_player->getId())
-                champ.at(i)->action1(i,champ,inactive_player);
+    if (active_player->getId()<inactive_player->getId()){
+        for (int i=0;i<taille_champ;i++){
+            if (champ.at(i)!=nullptr){
+                if (champ.at(i)->getPlayer()==active_player){
+                    champ.at(i)->action1(i,champ,inactive_player);
+                }
+            }
+        }
+    }
+    else {
+        for (int i=taille_champ-1;i>=0;i--){
+            if (champ.at(i)!=nullptr){
+                if (champ.at(i)->getPlayer()==active_player){
+                    champ.at(i)->action1(i,champ,inactive_player);
+                }
+            }
         }
     }
 }
 
 void Jeu::lanceAction2(){
     if (active_player->getId()>inactive_player->getId()){
-        for (int i=1;i<taille_champ-1;i++){
+        for (int i=0;i<taille_champ;i++){
             if (champ.at(i)!=nullptr){
-                if (champ.at(i)->getPlayer()->getId()==active_player->getId())
-                    champ.at(i)->action2(i,champ,inactive_player);
+                if (champ.at(i)->getPlayer()==active_player)
+                    {
+                        champ.at(i)->action2(i,champ,inactive_player);
+                    }
             }
         }
     } else {
-        for (int i=taille_champ-2;i>0;i--){
+        for (int i=taille_champ-1;i>=0;i--){
             if (champ.at(i)!=nullptr){
-                if (champ.at(i)->getPlayer()->getId()==active_player->getId())
+                if (champ.at(i)->getPlayer()==active_player)
+                {
                     champ.at(i)->action2(i,champ,inactive_player);
+                }
             }
         }
     }
@@ -174,14 +216,14 @@ void Jeu::lanceAction2(){
 
 void Jeu::lanceAction3(){
     if (active_player->getId()>inactive_player->getId()){
-        for (int i=1;i<taille_champ-1;i++){
+        for (int i=0;i<taille_champ;i++){
             if (champ.at(i)!=nullptr){
                 if (champ.at(i)->getPlayer()->getId()==active_player->getId())
                     champ.at(i)->action3(i,champ,inactive_player);
             }
         }
     } else {
-        for (int i=taille_champ-2;i>0;i--){
+        for (int i=taille_champ-1;i>=0;i--){
             if (champ.at(i)!=nullptr){
                 if (champ.at(i)->getPlayer()->getId()==active_player->getId())
                     champ.at(i)->action3(i,champ,inactive_player);
@@ -191,6 +233,16 @@ void Jeu::lanceAction3(){
     
 }
 
+void Jeu::checkMort(){
+    for (int i=0;i<taille_champ;i++){
+        if (champ.at(i)!=nullptr){
+            if (champ.at(i)->getHp()<=0) {
+                active_player->addOr(champ.at(i)->getPrix()/2);
+                champ.at(i)=nullptr;
+            }
+        }
+    }
+}
 Jeu::~Jeu(){
     for (Unite *u: champ) delete u;
 }

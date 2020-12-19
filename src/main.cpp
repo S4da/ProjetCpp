@@ -3,7 +3,7 @@
 #include "player.h"
 #include "jeu.h"
 
-int main(int argc, char* argv[])
+int main()
 {
 
     Jeu j=Jeu();

@@ -11,7 +11,7 @@ class Archer: public Unite{
         ~Archer();
         std::string getUnit() { return "A";};
         void action1(int pos, std::vector<Unite*> &champ, Player* ennemi);
-        void action3(int pos, std::vector<Unite*> &champ, Player* ennemi);
+
 };
 
  #endif

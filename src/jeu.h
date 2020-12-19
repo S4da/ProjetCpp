@@ -15,6 +15,7 @@ class Jeu{
         Player* p1;
         Player* p2;
         int remuneration=8;
+        bool fin=false;
     public:
         Jeu();
         ~Jeu();
@@ -27,6 +28,7 @@ class Jeu{
         void lanceAction1();
         void lanceAction2();
         void lanceAction3();
+        void checkMort();
 };
 
  #endif

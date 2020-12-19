@@ -13,7 +13,7 @@ class Player{
     public:
         Player(int i);
         virtual ~Player();
-        bool aPerdu() { return vie == 0;};
+        bool aPerdu() { return vie <= 0;};
         void print();
         void addOr(int montant){ balance+=montant;};
         int getBalance() { return balance;};
