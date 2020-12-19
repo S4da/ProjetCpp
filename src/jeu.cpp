@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include "jeu.h"
 #include "ia.h"
@@ -32,11 +33,12 @@ void Jeu::debutJeu(){
     std::cin>>rep;
     if (rep==1) lancerJeu(p1,p2);
     else if (rep==2) lancerJeu(p1);
+    //system("clear");
 }
 
 
 void Jeu::lancerJeu(Player *p1, Player *p2){
-    int cpt=-1;
+
     active_player=p1;
     inactive_player=p2;
 
@@ -63,8 +65,9 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
             checkMort();
             std::cout<<std::endl<<std::endl;
             afficherMap();
-            if (p1->aPerdu() || p2->aPerdu() || fin) break;
+            if (p1->aPerdu() || p2->aPerdu()) break;
             achat();
+            if (fin) break;
         }
     }
     if (p1->aPerdu() || p2->aPerdu()){
@@ -73,6 +76,7 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
         std::cin>>fin;
     } else if (fin){
         /* faire des trucs*/
+        sauvegarder();
     }
 }
 
@@ -84,6 +88,7 @@ void Jeu::lancerJeu(Player *p1){
 
 void Jeu::achat(){
     int tour=0;
+    std::string choixAction=" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder et quitter";
     if (active_player->getId()<inactive_player->getId()) tour=0;
     else tour=taille_champ-1;
     std::cout<<"\n\n";
@@ -98,7 +103,7 @@ void Jeu::achat(){
         
         while (!peutAcheter){
             std::string entree="";
-            std::cout<<" Que voulez vous acheter ? \n 1) Fantassin-10 Po\t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder"<<std::endl;
+            std::cout<<choixAction<<std::endl;
             std::cin>>entree;
             try{
                 choixAchat=std::stoi(entree);
@@ -109,7 +114,7 @@ void Jeu::achat(){
             while (choixAchat<1 || choixAchat>5)
             {
                 std::cout<<" ! Vous devez choisir entre 1, 2 et 3 !"<<std::endl;
-                std::cout<<" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder"<<std::endl;
+                std::cout<<choixAction<<std::endl;
                 std::cin>>entree;
                 try{
                     choixAchat=std::stoi(entree);
@@ -118,7 +123,9 @@ void Jeu::achat(){
                 }
             }
             if (choixAchat==4) { break;}
-            else if (choixAchat==5) { /* faire des truc */ fin=true; break;}
+            else if (choixAchat==5) {
+                 fin=true;
+                 break;}
             else {
                 if (choixAchat==1){ //faire en sorte de check la thune et prelever
                 choix=new Fantassin(active_player);
@@ -243,6 +250,24 @@ void Jeu::checkMort(){
         }
     }
 }
+
+void Jeu::sauvegarder(){
+    std::string save="";
+    save+=std::to_string(cpt)+"\n";
+    save+=std::to_string(active_player->getId())+";"+std::to_string(active_player->getVie())+";"+std::to_string(active_player->getBalance())+"\n";
+    save+=std::to_string(inactive_player->getId())+";"+std::to_string(inactive_player->getVie())+";"+std::to_string(inactive_player->getBalance())+"\n";
+
+    for (int i=0;i<taille_champ;i++){
+        if (champ.at(i)!=nullptr){
+            save+=std::to_string(champ.at(i)->getPlayer()->getId())+";"+std::to_string(champ.at(i)->getHp())+";"+champ.at(i)->getType()+";"+std::to_string(i)+"\n";
+        }
+    }
+    std::ofstream fichier("save.txt");
+    fichier<<save;
+    fichier.close();
+}
+
+
 Jeu::~Jeu(){
     for (Unite *u: champ) delete u;
 }

@@ -16,6 +16,7 @@ class Jeu{
         Player* p2;
         int remuneration=8;
         bool fin=false;
+        int cpt=-1;
     public:
         Jeu();
         ~Jeu();
@@ -29,6 +30,7 @@ class Jeu{
         void lanceAction2();
         void lanceAction3();
         void checkMort();
+        void sauvegarder(int cpt);
 };
 
  #endif

@@ -20,6 +20,7 @@ class Player{
         int getId() { return id;};
         void payer(int montant) { balance-=montant;};
         void damage(int montant) { vie-=montant;};
+        int getVie() {return vie;};
         bool operator==(Player* player) { return this->getId()==player->getId();};
         bool operator!=(Player* player) { return this->getId()!=player->getId();};
         //virtual void joue();
