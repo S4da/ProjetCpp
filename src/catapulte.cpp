@@ -4,7 +4,7 @@
 
 Catapulte::Catapulte(Player* player): Unite(20,8,2,4,6,player)
 {
-    setType("catapulte");
+    setType("Catapulte");
 }
 
 void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){

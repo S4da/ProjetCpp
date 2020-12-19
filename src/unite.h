@@ -18,7 +18,7 @@ class Unite{
         Unite(int prix, int pv, int rangeMin, int rangeMax,int atk,Player* player);
         virtual ~Unite();
         virtual void setHp(int vie) { pv=vie;};
-        virtual std::string getUnit() { return " ___ ";};
+        virtual std::string getUnit() =0;
         int getPrix() {return prix;};
         Player* getPlayer() {return player;};
         void damage(int dmg) { pv-=dmg;};
@@ -34,6 +34,7 @@ class Unite{
         void afficherActionAtk(int pos) {std::cout<< "\nL'unite a la position "<<pos<<" attaque.";};
         void afficherActionAvance(int pos) { std::cout<< "\nL'unite a la position "<<pos<<" avance.";};
         void attaque(Unite* ennemi);
+        void setPlayer(Player* p) { player=p;};
         
 };
 

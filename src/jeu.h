@@ -20,10 +20,10 @@ class Jeu{
     public:
         Jeu();
         ~Jeu();
-        void lancerJeu(Player *p1, Player *p2);
+        void lancerJeu(bool continu=false);
         void debutJeu();
         void sauvegarder();
-        void lancerJeu(Player *p1);
+        void lancerJeuIa();
         void afficherMap();
         void achat();
         void lanceAction1();

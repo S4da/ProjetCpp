@@ -21,6 +21,8 @@ class Player{
         void payer(int montant) { balance-=montant;};
         void damage(int montant) { vie-=montant;};
         int getVie() {return vie;};
+        void setHp(int hp) { vie=hp;};
+        void setBalance(int argent) { balance=argent;};
         bool operator==(Player* player) { return this->getId()==player->getId();};
         bool operator!=(Player* player) { return this->getId()!=player->getId();};
         //virtual void joue();

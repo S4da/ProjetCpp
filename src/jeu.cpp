@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <sstream>
 #include "jeu.h"
 #include "ia.h"
 #include "archer.h"
@@ -28,22 +29,80 @@ void Jeu::debutJeu(){
                 "| $$  | $$|  $$$$$$/| $$$$$$$$      |  $$$$$$/| $$            | $$/   \\  $$| $$  | $$| $$  | $$\n "
                 "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/\n ";
     
-    std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Sortie \n";
+    std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Sortie \t\t 4) Charger\n";
     int rep=0;
     std::cin>>rep;
-    if (rep==1) lancerJeu(p1,p2);
-    else if (rep==2) lancerJeu(p1);
+    if (rep==1) lancerJeu();
+    else if (rep==2) lancerJeuIa();
+    else if (rep==4) {
+        std::ifstream save("save.txt");
+        if (save){
+            std::string contenu;
+            getline(save,contenu);
+            if (contenu!="vide"){
+                std::string mot;
+                cpt=stoi(contenu);
+
+                getline(save,contenu); 
+                std::vector<std::string> j1;
+                std::stringstream ss(contenu);
+                while (std::getline(ss,mot,';')){
+                    j1.push_back(mot);
+                }
+
+                getline(save,contenu);
+                std::vector<std::string> j2;
+                std::stringstream ss1(contenu);
+                while (std::getline(ss1,mot,';')){
+                    j2.push_back(mot);
+                }
+
+                p1=new Player(stoi(j1.at(0)));
+                p1->setHp(stoi(j1.at(1)));
+                p1->setBalance(stoi(j1.at(2)));
+                p2=new Player(stoi(j2.at(0)));
+                p2->setHp(stoi(j2.at(1)));
+                p2->setBalance(stoi(j2.at(2)));
+
+                while (getline(save,contenu)){
+                    std::vector<std::string> unit;
+                    std::string res;
+                    std::stringstream ss2(contenu);
+                    while (std::getline(ss2,res,';')){
+                        unit.push_back(res);
+                    }
+                
+                    int idP=stoi(unit.at(0));
+                    int hp=stoi(unit.at(1));
+                    std::string type=unit.at(2);
+                    int pos=stoi(unit.at(3));
+                    Unite* unite;
+                    Player* joueur;
+                    if (idP==p1->getId()) joueur=p1;
+                    else joueur=p2;
+                    if (type=="Fantassin") unite=new Fantassin(joueur);
+                    else if (type=="Archer") unite=new Archer(joueur);
+                    else if (type=="Catapulte") unite=new Catapulte(joueur);
+                    else unite=new SuperSoldat(hp,joueur);
+                    unite->setHp(hp);
+                    champ.at(pos)=unite;
+                    
+                }
+                lancerJeu(true);
+            }else{
+                std::cout<<"Il n'y a pas de partie a charger.\n";
+            }
+        }
+    }
     //system("clear");
 }
 
 
-void Jeu::lancerJeu(Player *p1, Player *p2){
-
-    active_player=p1;
-    inactive_player=p2;
+void Jeu::lancerJeu(bool continu){
+    bool continuGame=continu;
 
     while(cpt<=2*tourMax){
-        cpt++;
+        if (!continuGame) cpt++;
         if (cpt%2==0){
             active_player=p1;
             inactive_player=p2;
@@ -52,17 +111,28 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
             active_player=p2;
             inactive_player=p1;
         }
-        active_player->addOr(remuneration);
+        
         system("clear");
         active_player->print();
         afficherMap();
 
-        if (cpt==0) achat();
+        if (cpt==0) {
+            if (!continuGame)
+            {
+                active_player->addOr(remuneration);
+            }else continuGame=false;
+            achat();
+            if (fin) break;
+        }
         else{
-            lanceAction1();
-            lanceAction2();
-            lanceAction3();
-            checkMort();
+            if (!continuGame){
+                active_player->addOr(remuneration);
+                lanceAction1();
+                lanceAction2();
+                lanceAction3();
+                checkMort();
+            }
+            else continuGame=false;
             std::cout<<std::endl<<std::endl;
             afficherMap();
             if (p1->aPerdu() || p2->aPerdu()) break;
@@ -72,8 +142,11 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
     }
     if (p1->aPerdu() || p2->aPerdu()){
         std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
-        std::string fin;
-        std::cin>>fin;
+        std::string fini;
+        std::cin>>fini;
+        std::ofstream fichier("save.txt");
+        fichier<<"vide";
+        fichier.close();
     } else if (fin){
         /* faire des trucs*/
         sauvegarder();
@@ -82,7 +155,7 @@ void Jeu::lancerJeu(Player *p1, Player *p2){
 
 
 
-void Jeu::lancerJeu(Player *p1){
+void Jeu::lancerJeuIa(){
     active_player=p1;
 }
 
@@ -127,7 +200,7 @@ void Jeu::achat(){
                  fin=true;
                  break;}
             else {
-                if (choixAchat==1){ //faire en sorte de check la thune et prelever
+                if (choixAchat==1){
                 choix=new Fantassin(active_player);
                 }else if (choixAchat==2){
                     choix=new Archer(active_player);
@@ -254,8 +327,8 @@ void Jeu::checkMort(){
 void Jeu::sauvegarder(){
     std::string save="";
     save+=std::to_string(cpt)+"\n";
-    save+=std::to_string(active_player->getId())+";"+std::to_string(active_player->getVie())+";"+std::to_string(active_player->getBalance())+"\n";
-    save+=std::to_string(inactive_player->getId())+";"+std::to_string(inactive_player->getVie())+";"+std::to_string(inactive_player->getBalance())+"\n";
+    save+=std::to_string(p1->getId())+";"+std::to_string(p1->getVie())+";"+std::to_string(p1->getBalance())+"\n";
+    save+=std::to_string(p2->getId())+";"+std::to_string(p2->getVie())+";"+std::to_string(p2->getBalance())+"\n";
 
     for (int i=0;i<taille_champ;i++){
         if (champ.at(i)!=nullptr){
