@@ -101,7 +101,7 @@ void Jeu::debutJeu(){
 void Jeu::lancerJeu(bool continu){
     bool continuGame=continu;
 
-    while(cpt<=2*tourMax){
+    while(cpt<2*tourMax){
         if (!continuGame) cpt++;
         if (cpt%2==0){
             active_player=p1;
