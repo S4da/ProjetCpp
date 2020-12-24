@@ -20,7 +20,7 @@ void Jeu::debutJeu(){
     p1=new Player(1);
     p2=new Player(2);
     IA ai=IA();
-    std::cout<< colorTitre+"   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
+    std::cout<< colorTitre+"\n   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
                 " /$$__  $$ /$$__  $$| $$_____/       /$$__  $$| $$_____/      | $$  /$ | $$ /$$__  $$| $$__  $$ \n "
                 "| $$  \\ $$| $$  \\__/| $$            | $$  \\ $$| $$            | $$ /$$$| $$| $$  \\ $$| $$  \\ $$\n "
                 "| $$$$$$$$| $$ /$$$$| $$$$$         | $$  | $$| $$$$$         | $$/$$ $$ $$| $$$$$$$$| $$$$$$$/\n "
@@ -225,7 +225,7 @@ void Jeu::afficherMap(){
                         colorP1Deb+" |  _|    //|\\\\  - |   | "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |  _|    //|\\\\  - |   |"+colorFin+"\n"+
                         colorP1Deb+" |   |   ///|\\\\\\   |  -|"+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   ///|\\\\\\   |  -|"+colorFin+"\n"+
                         colorP1Deb+" |   |   |||||||   |-  |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   |||||||   |-  |"+colorFin+"\n"+
-                        colorP1Deb+" |___|___| P1- |___|___|   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |___|___| -P2 |___|___|"+colorFin+"\n"+
+                        colorP1Deb+" |___|___| "+colorP1DebBold+ +"P1-"+colorFin+colorP1Deb+" |___|___|   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |___|___| "+colorP2DebBold+ "-P2"+colorFin+colorP2Deb+" |___|___|"+colorFin+"\n"+
                         colorP1Deb+"         (      (          "+colorFin+  "\t\t\t    "   +colorP2Deb+          "         )      )"+colorFin+"\n"+
                         colorP1Deb+"          \\"+colorFin+prems+colorP1Deb+" \\       "+colorFin+  "\t\t\t    " +colorP2Deb+ "        / "+colorFin+ der+colorP2Deb+"/"+colorFin+"\n"+
                         colorP1Deb+"           )"+colorFin+pvPrems+colorP1Deb+" )        "+colorFin+  "\t\t\t    "  +colorP2Deb+           "       ( "+colorFin+pvDer+colorP2Deb+"("+colorFin+"\n"
