@@ -9,8 +9,8 @@ Player::Player(int i)
     balance=20;
 }
 
-void Player::print(){ 
-    std::cout<<"Player "<<id<< ": \tVie: "<<vie<<"\t Gold: "<<balance<<std::endl<<std::endl;
+std::string Player::print(){ 
+    return "Player "+std::to_string(id)+ ": \tVie: "+std::to_string(vie)+"\t Gold: "+std::to_string(balance)+"\n\n";
 }
 
 Player::~Player() {}

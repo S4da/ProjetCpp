@@ -8,17 +8,19 @@ Catapulte::Catapulte(Player* player): Unite(20,8,2,4,6,player)
 }
 
 void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
-   act1Fait=false;
-   int dist=1;
-   int pas=1;
+    act1Fait=false;
+    int dist=1;
+    int pas=1;
     int i=0;
     bool ennemiTrouve=false;
     int taille_champ=champ.size();
+    bool chateauTrouve=false;
     if (champ.at(pos)->getPlayer()->getId()>ennemi->getId()){
         dist=12;
         pas=-1;
-        for (i=pos-getRangeMin();i>=pos-getRangeMax()+1;i--){
+        for (i=pos-getRangeMin();i>=pos-getRangeMax();i--){
             if (i==taille_champ-dist){
+                chateauTrouve=true;
                 break;
             }else if (champ.at(i)!=nullptr){
                 if (this->getPlayer()!=champ.at(i)->getPlayer()){
@@ -29,8 +31,10 @@ void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
         }
     }
     else{
-        for (i=pos+getRangeMin();i<pos+getRangeMax();i++){
+        for (i=pos+getRangeMin();i<=pos+getRangeMax();i++){
+            std::cout<<i;
             if (i==taille_champ-dist){
+                chateauTrouve=true;
                 break;
             }else if (champ.at(i)!=nullptr){
                 if (this->getPlayer()!=champ.at(i)->getPlayer()){
@@ -40,6 +44,7 @@ void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
             }
         }
     }
+    if (!chateauTrouve && !ennemiTrouve) i=i-pas;
     if (ennemiTrouve)
     {   
         int t1,t2;
@@ -50,16 +55,20 @@ void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
             t1=i;
             t2=i+pas;
         }
-        
+        std::cout<<"attaque "<<t1<<" et "<<t2<<std::endl;
         this->attaque(champ.at(t1));
-        this->attaque(champ.at(t2));
+        if (t2==taille_champ-dist && champ.at(t2)==nullptr) ennemi->damage(this->getAtk());
+        else this->attaque(champ.at(t2));
         act1Fait=true;
     } else if (i==taille_champ-dist) {
         if (i==pos+(getRangeMax()*pas)){
             afficherActionAtk(pos);
             this->attaque(champ.at(i-pas));
-            ennemi->damage(this->getAtk());
-        }else{
+            if (champ.at(i)!=nullptr) this->attaque(champ.at(i));
+            else ennemi->damage(this->getAtk());
+        }else{ // ce else n'est pas utile car dans les regles actuelles
+        // la catapulte ne peut pas s'approcher a moins de 4 cases de la tour
+        // adverses, mais on sait jamais.
             afficherActionAtk(pos);
             ennemi->damage(this->getAtk());
         }

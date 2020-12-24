@@ -40,7 +40,7 @@ void Fantassin::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
             std::cout<< "\nL'unite a la position "<<pos<<" attaque.";
             if (champ.at(pos+pas)->getHp()<=0) {
                 if (getType()==champ.at(pos+pas)->getType()) {
-                    std::cout<< "\nL'unite a la position "<<pos<<" devient un Super Soldat.";
+                    if (this->getType()=="Fantassin") std::cout<< "\nL'unite a la position "<<pos<<" devient un Super Soldat.";
                     champ.at(pos)=new SuperSoldat(champ.at(pos)->getHp(),champ.at(pos)->getPlayer());
                 }
             }

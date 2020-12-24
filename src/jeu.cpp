@@ -20,79 +20,23 @@ void Jeu::debutJeu(){
     p1=new Player(1);
     p2=new Player(2);
     IA ai=IA();
-    std::cout<< "   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
+    std::cout<< colorTitre+"   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
                 " /$$__  $$ /$$__  $$| $$_____/       /$$__  $$| $$_____/      | $$  /$ | $$ /$$__  $$| $$__  $$ \n "
                 "| $$  \\ $$| $$  \\__/| $$            | $$  \\ $$| $$            | $$ /$$$| $$| $$  \\ $$| $$  \\ $$\n "
                 "| $$$$$$$$| $$ /$$$$| $$$$$         | $$  | $$| $$$$$         | $$/$$ $$ $$| $$$$$$$$| $$$$$$$/\n "
                 "| $$__  $$| $$|_  $$| $$__/         | $$  | $$| $$__/         | $$$$_  $$$$| $$__  $$| $$__  $$\n "
                 "| $$  | $$| $$  \\ $$| $$            | $$  | $$| $$            | $$$/ \\  $$$| $$  | $$| $$  \\ $$\n "
                 "| $$  | $$|  $$$$$$/| $$$$$$$$      |  $$$$$$/| $$            | $$/   \\  $$| $$  | $$| $$  | $$\n "
-                "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/\n ";
+                "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/\n "+colorFin;
     
     std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Sortie \t\t 4) Charger\n";
+    
     int rep=0;
     std::cin>>rep;
     if (rep==1) lancerJeu();
     else if (rep==2) lancerJeuIa();
     else if (rep==4) {
-        std::ifstream save("save.txt");
-        if (save){
-            std::string contenu;
-            getline(save,contenu);
-            if (contenu!="vide"){
-                std::string mot;
-                cpt=stoi(contenu);
-
-                getline(save,contenu); 
-                std::vector<std::string> j1;
-                std::stringstream ss(contenu);
-                while (std::getline(ss,mot,';')){
-                    j1.push_back(mot);
-                }
-
-                getline(save,contenu);
-                std::vector<std::string> j2;
-                std::stringstream ss1(contenu);
-                while (std::getline(ss1,mot,';')){
-                    j2.push_back(mot);
-                }
-
-                p1=new Player(stoi(j1.at(0)));
-                p1->setHp(stoi(j1.at(1)));
-                p1->setBalance(stoi(j1.at(2)));
-                p2=new Player(stoi(j2.at(0)));
-                p2->setHp(stoi(j2.at(1)));
-                p2->setBalance(stoi(j2.at(2)));
-
-                while (getline(save,contenu)){
-                    std::vector<std::string> unit;
-                    std::string res;
-                    std::stringstream ss2(contenu);
-                    while (std::getline(ss2,res,';')){
-                        unit.push_back(res);
-                    }
-                
-                    int idP=stoi(unit.at(0));
-                    int hp=stoi(unit.at(1));
-                    std::string type=unit.at(2);
-                    int pos=stoi(unit.at(3));
-                    Unite* unite;
-                    Player* joueur;
-                    if (idP==p1->getId()) joueur=p1;
-                    else joueur=p2;
-                    if (type=="Fantassin") unite=new Fantassin(joueur);
-                    else if (type=="Archer") unite=new Archer(joueur);
-                    else if (type=="Catapulte") unite=new Catapulte(joueur);
-                    else unite=new SuperSoldat(hp,joueur);
-                    unite->setHp(hp);
-                    champ.at(pos)=unite;
-                    
-                }
-                lancerJeu(true);
-            }else{
-                std::cout<<"Il n'y a pas de partie a charger.\n";
-            }
-        }
+        charger();
     }
     //system("clear");
 }
@@ -113,7 +57,8 @@ void Jeu::lancerJeu(bool continu){
         }
         
         system("clear");
-        active_player->print();
+        if (active_player==p1)std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
+        else std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
         afficherMap();
 
         if (cpt==0) {
@@ -224,29 +169,68 @@ void Jeu::afficherMap(){
     std::string res="";
     std::string pv="";
     std::string vide=" ___ ";
-
+    std::string prems,der;
+    std::string pvPrems,pvDer;
     for (int i=0;i<taille_champ;i++){
         if (champ.at(i)==nullptr) {
-            res+=vide;
-            pv+= "     ";
+            if (i==0) {
+                prems="     ";
+                pvPrems="     ";
+            }
+            else if (i==taille_champ-1) {
+                der="     ";
+                pvDer="     ";
+            }
+            else 
+            {
+                res+=vide;
+                pv+= "     ";
+            }
         }
         else{
             if (champ.at(i)->getPlayer()==p1){
-                res+= " _"+champ[i]->getUnit()+"- ";
-            }else res+= " -"+champ[i]->getUnit()+"_ ";
+                if (i==0) {
+                    prems=" _"+champ[i]->getUnit()+"- ";
+                    prems=colorP1DebBold+prems+colorFin;
+                }
+                else res+= colorP1DebBold+" _"+champ[i]->getUnit()+"- "+colorFin;
+            }else {
+                if (i==taille_champ-1) {
+                    der= " -"+champ[i]->getUnit()+"_ ";
+                    der=colorP2DebBold+der+colorFin;
+                }
+                else res+= colorP2DebBold+" -"+champ[i]->getUnit()+"_ "+colorFin;
+            }
             if (champ.at(i)->getHp()!=0) {
-                if (champ.at(i)->getHp()>=10) pv+= "  "+std::to_string(champ.at(i)->getHp())+" ";
-                else pv+= "  "+std::to_string(champ.at(i)->getHp())+"  ";
+                std::string pvCourant="";
+                if (champ.at(i)->getHp()>=10) pvCourant= "  "+std::to_string(champ.at(i)->getHp())+" ";
+                else pvCourant= "  "+std::to_string(champ.at(i)->getHp())+"  ";
+
+                if (i==0) pvPrems=colorP1DebBold+pvCourant+colorFin;
+                else if (i==taille_champ-1) pvDer=colorP2DebBold+pvCourant+colorFin;
+                else {
+                    if (champ.at(i)->getPlayer()==p1) pv=pv+colorP1DebBold+pvCourant+colorFin;
+                    else pv=pv+colorP2DebBold+pvCourant+colorFin;
+                }
             }
         }
     }
-
-    std::string retour =    " |\\/\\/\\/|""\t\t\t\t\t\t\t " "|\\/\\/\\/| \n"    
-                            " |      | "  "\t\t\t\t\t\t\t "  "|      | \n"
-                            " |      | "  "\t\t\t\t\t\t\t "  "|      | \n"
-                            " |  P1 "   + res +      " P2  | \n"
-                            "       "+pv;
-    
+    std::string retour= colorP1Deb+"  / \\               / \\  "+colorFin+  "\t\t\t    "   +colorP2Deb+          "  / \\               / \\ "+colorFin+"\n"+
+                        colorP1Deb+" /   \\             /   \\ "+colorFin+  "\t\t\t    "   +colorP2Deb+          " /   \\             /   \\"+colorFin+"\n"+
+                        colorP1Deb+"(_____)           (_____)  "+colorFin+  "\t\t\t    "   +colorP2Deb+          "(_____)           (_____)"+colorFin+"\n"+
+                        colorP1Deb+" |   |  _   _   _  |   |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |  _   _   _  |   |"+colorFin+"\n"+
+                        colorP1Deb+" | O |_| |_| |_| |_| O |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " | O |_| |_| |_| |_| O |"+colorFin+"\n"+
+                        colorP1Deb+" |-  |          _  | - |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |-  |          _  | - |"+colorFin+"\n"+
+                        colorP1Deb+" |   |   - _^_     |   |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   - _^_     |   |"+colorFin+"\n"+
+                        colorP1Deb+" |  _|    //|\\\\  - |   | "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |  _|    //|\\\\  - |   |"+colorFin+"\n"+
+                        colorP1Deb+" |   |   ///|\\\\\\   |  -|"+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   ///|\\\\\\   |  -|"+colorFin+"\n"+
+                        colorP1Deb+" |   |   |||||||   |-  |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   |||||||   |-  |"+colorFin+"\n"+
+                        colorP1Deb+" |___|___| P1- |___|___|   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |___|___| -P2 |___|___|"+colorFin+"\n"+
+                        colorP1Deb+"         (      (          "+colorFin+  "\t\t\t    "   +colorP2Deb+          "         )      )"+colorFin+"\n"+
+                        colorP1Deb+"          \\"+colorFin+prems+colorP1Deb+" \\       "+colorFin+  "\t\t\t    " +colorP2Deb+ "        / "+colorFin+ der+colorP2Deb+"/"+colorFin+"\n"+
+                        colorP1Deb+"           )"+colorFin+pvPrems+colorP1Deb+" )        "+colorFin+  "\t\t\t    "  +colorP2Deb+           "       ( "+colorFin+pvDer+colorP2Deb+"("+colorFin+"\n"
+                        "              "+ res +      "         \n"
+                        "              "+pv;
     std::cout<<retour;
 }
 
@@ -338,6 +322,67 @@ void Jeu::sauvegarder(){
     std::ofstream fichier("save.txt");
     fichier<<save;
     fichier.close();
+}
+
+void Jeu::charger(){
+    std::ifstream save("save.txt");
+    if (save){
+        std::string contenu;
+        getline(save,contenu);
+        if (contenu!="vide"){
+            std::string mot;
+            cpt=stoi(contenu);
+
+            getline(save,contenu); 
+            std::vector<std::string> j1;
+            std::stringstream ss(contenu);
+            while (std::getline(ss,mot,';')){
+                j1.push_back(mot);
+            }
+
+            getline(save,contenu);
+            std::vector<std::string> j2;
+            std::stringstream ss1(contenu);
+            while (std::getline(ss1,mot,';')){
+                j2.push_back(mot);
+            }
+
+            p1=new Player(stoi(j1.at(0)));
+            p1->setHp(stoi(j1.at(1)));
+            p1->setBalance(stoi(j1.at(2)));
+            p2=new Player(stoi(j2.at(0)));
+            p2->setHp(stoi(j2.at(1)));
+            p2->setBalance(stoi(j2.at(2)));
+
+            while (getline(save,contenu)){
+                std::vector<std::string> unit;
+                std::string res;
+                std::stringstream ss2(contenu);
+                while (std::getline(ss2,res,';')){
+                    unit.push_back(res);
+                }
+            
+                int idP=stoi(unit.at(0));
+                int hp=stoi(unit.at(1));
+                std::string type=unit.at(2);
+                int pos=stoi(unit.at(3));
+                Unite* unite;
+                Player* joueur;
+                if (idP==p1->getId()) joueur=p1;
+                else joueur=p2;
+                if (type=="Fantassin") unite=new Fantassin(joueur);
+                else if (type=="Archer") unite=new Archer(joueur);
+                else if (type=="Catapulte") unite=new Catapulte(joueur);
+                else unite=new SuperSoldat(hp,joueur);
+                unite->setHp(hp);
+                champ.at(pos)=unite;
+                
+            }
+            lancerJeu(true);
+        }else{
+            std::cout<<"Il n'y a pas de partie a charger.\n";
+        }
+    }else std::cout<<"Il n'y a pas de partie a charger.\n";
 }
 
 

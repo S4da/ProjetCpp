@@ -14,7 +14,7 @@ class Player{
         Player(int i);
         virtual ~Player();
         bool aPerdu() { return vie <= 0;};
-        void print();
+        std::string print();
         void addOr(int montant){ balance+=montant;};
         int getBalance() { return balance;};
         int getId() { return id;};
