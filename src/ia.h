@@ -8,7 +8,7 @@ class IA: public Player{
     public:
         IA();
         ~IA();
-        std::string print() { return "\nIA\n\n\n";};
+        std::string print() { return "\n\tIA\n\n\n";};
         int jouer();
         int strat1();
         //void joue();

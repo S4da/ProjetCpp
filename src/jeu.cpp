@@ -17,28 +17,36 @@ Jeu::Jeu():taille_champ(12),tourMax(100){
 }
 
 void Jeu::debutJeu(){
-    system("clear");
     p1=new Player(1);
     p2=new Player(2);
     p3=new IA();
-    std::cout<< colorTitre+"\n   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
-                " /$$__  $$ /$$__  $$| $$_____/       /$$__  $$| $$_____/      | $$  /$ | $$ /$$__  $$| $$__  $$ \n "
-                "| $$  \\ $$| $$  \\__/| $$            | $$  \\ $$| $$            | $$ /$$$| $$| $$  \\ $$| $$  \\ $$\n "
-                "| $$$$$$$$| $$ /$$$$| $$$$$         | $$  | $$| $$$$$         | $$/$$ $$ $$| $$$$$$$$| $$$$$$$/\n "
-                "| $$__  $$| $$|_  $$| $$__/         | $$  | $$| $$__/         | $$$$_  $$$$| $$__  $$| $$__  $$\n "
-                "| $$  | $$| $$  \\ $$| $$            | $$  | $$| $$            | $$$/ \\  $$$| $$  | $$| $$  \\ $$\n "
-                "| $$  | $$|  $$$$$$/| $$$$$$$$      |  $$$$$$/| $$            | $$/   \\  $$| $$  | $$| $$  | $$\n "
-                "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/\n "+colorFin;
-    
-    std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Sortie \t\t 4) Charger\n";
-    
+    std::string tryRep="";
     int rep=0;
-    std::cin>>rep;
-    if (rep==1) lancerJeu();
-    else if (rep==2) lancerJeuIa();
-    else if (rep==4) {
-        charger();
-    }
+
+    do{
+        system("clear");
+        std::cout<< colorTitre+"\n   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
+                    " /$$__  $$ /$$__  $$| $$_____/       /$$__  $$| $$_____/      | $$  /$ | $$ /$$__  $$| $$__  $$ \n "
+                    "| $$  \\ $$| $$  \\__/| $$            | $$  \\ $$| $$            | $$ /$$$| $$| $$  \\ $$| $$  \\ $$\n "
+                    "| $$$$$$$$| $$ /$$$$| $$$$$         | $$  | $$| $$$$$         | $$/$$ $$ $$| $$$$$$$$| $$$$$$$/\n "
+                    "| $$__  $$| $$|_  $$| $$__/         | $$  | $$| $$__/         | $$$$_  $$$$| $$__  $$| $$__  $$\n "
+                    "| $$  | $$| $$  \\ $$| $$            | $$  | $$| $$            | $$$/ \\  $$$| $$  | $$| $$  \\ $$\n "
+                    "| $$  | $$|  $$$$$$/| $$$$$$$$      |  $$$$$$/| $$            | $$/   \\  $$| $$  | $$| $$  | $$\n "
+                    "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/\n "+colorFin;
+        
+        std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Sortie \t\t 4) Charger\n";
+        
+        
+        std::cin>>tryRep;
+        try{
+            rep=stoi(tryRep);
+            if (rep==1) lancerJeu();
+            else if (rep==2) lancerJeuIa();
+            else if (rep==4) {
+                charger();
+            }
+        }catch(...){}
+    }while(rep<1 || rep>4);
     //system("clear");
 }
 
@@ -59,21 +67,24 @@ void Jeu::lancerJeu(bool continu){
         }
         
         system("clear");
+        if (!continuGame)
+        {
+            active_player->addOr(remuneration);
+        }
         if (active_player==p1)std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
         else std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
         afficherMap();
 
         if (cpt==0) {
-            if (!continuGame)
+            if (continuGame)
             {
-                active_player->addOr(remuneration);
-            }else continuGame=false;
+                continuGame=false;
+            }
             achat();
             if (fin) break;
         }
         else{
             if (!continuGame){
-                active_player->addOr(remuneration);
                 lanceAction1();
                 lanceAction2();
                 lanceAction3();
@@ -114,22 +125,25 @@ void Jeu::lancerJeuIa(bool continu){
             active_player=p1;
             inactive_player=p3;
             system("clear");
+            if (!continuGame)
+            {
+                active_player->addOr(remuneration);
+            }
             std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
             afficherMap();
             
             if (cpt==0) {
                 
-                if (!continuGame)
+                if (continuGame)
                 {
-                    active_player->addOr(remuneration);
-                }else continuGame=false;
+                    continuGame=false;
+                }
                 achat();
                 if (fin) break;
                 
             }
             else{
                 if (!continuGame){
-                    active_player->addOr(remuneration);
                     lanceAction1();
                     lanceAction2();
                     lanceAction3();
@@ -146,7 +160,8 @@ void Jeu::lancerJeuIa(bool continu){
             active_player=p3;
             inactive_player=p1;
             system("clear");
-            std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
+            active_player->addOr(remuneration);
+            std::cout<<active_player->getBalance()<< std::endl<<colorP2DebBold+active_player->print()+colorFin;
             afficherMap();
             lanceAction1();
             lanceAction2();
@@ -156,7 +171,7 @@ void Jeu::lancerJeuIa(bool continu){
             afficherMap();
             std::cout<<std::endl<<std::endl;
             if (inactive_player->aPerdu()) break;
-            sleep(2);
+            sleep(1);
             achatIA();
         }
     }
@@ -201,7 +216,7 @@ void Jeu::achat(){
             
             while (choixAchat<1 || choixAchat>5)
             {
-                std::cout<<" ! Vous devez choisir entre 1, 2 et 3 !"<<std::endl;
+                std::cout<<" ! Vous devez choisir entre 1, 2, 3, 4 et 5 !"<<std::endl;
                 std::cout<<choixAction<<std::endl;
                 std::cin>>entree;
                 try{
@@ -264,6 +279,20 @@ void Jeu::afficherMap(){
     std::string vide=" ___ ";
     std::string prems,der;
     std::string pvPrems,pvDer;
+    std::string pvP1="   ",pvP2="   ";
+
+    if (inactive_player==p3 || active_player==p3){
+        if (p3->getVie()<100) pvP2=std::to_string(p3->getVie())+" "; 
+        else pvP2=std::to_string(p3->getVie());
+        pvP2=colorP2DebBold+pvP2+colorFin;
+    }else {
+        if (p2->getVie()<100) pvP2=std::to_string(p2->getVie())+" "; 
+        else pvP2=std::to_string(p3->getVie());
+        pvP2=colorP2DebBold+pvP2+colorFin;
+    }
+    if (p1->getVie()<100) pvP1=std::to_string(p1->getVie())+" ";
+    else pvP1=std::to_string(p1->getVie()); 
+    pvP1=colorP1DebBold+pvP1+colorFin;
     for (int i=0;i<taille_champ;i++){
         if (champ.at(i)==nullptr) {
             if (i==0) {
@@ -309,7 +338,7 @@ void Jeu::afficherMap(){
         }
     }
     std::string retour= colorP1Deb+"  / \\               / \\  "+colorFin+  "\t\t\t    "   +colorP2Deb+          "  / \\               / \\ "+colorFin+"\n"+
-                        colorP1Deb+" /   \\             /   \\ "+colorFin+  "\t\t\t    "   +colorP2Deb+          " /   \\             /   \\"+colorFin+"\n"+
+                        colorP1Deb+" /   \\             /"+colorFin+pvP1+colorP1Deb+"\\ "+colorFin+  "\t\t\t    "   +colorP2Deb+          " /"+colorFin+pvP2+colorP2Deb+"\\             /   \\"+colorFin+"\n"+
                         colorP1Deb+"(_____)           (_____)  "+colorFin+  "\t\t\t    "   +colorP2Deb+          "(_____)           (_____)"+colorFin+"\n"+
                         colorP1Deb+" |   |  _   _   _  |   |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |  _   _   _  |   |"+colorFin+"\n"+
                         colorP1Deb+" | O |_| |_| |_| |_| O |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " | O |_| |_| |_| |_| O |"+colorFin+"\n"+
@@ -405,7 +434,8 @@ void Jeu::sauvegarder(){
     std::string save="";
     save+=std::to_string(cpt)+"\n";
     save+=std::to_string(p1->getId())+";"+std::to_string(p1->getVie())+";"+std::to_string(p1->getBalance())+"\n";
-    save+=std::to_string(p2->getId())+";"+std::to_string(p2->getVie())+";"+std::to_string(p2->getBalance())+"\n";
+    if (inactive_player==p2 || active_player==p2) save+=std::to_string(p2->getId())+";"+std::to_string(p2->getVie())+";"+std::to_string(p2->getBalance())+"\n";
+    else save+=std::to_string(p3->getId())+";"+std::to_string(p3->getVie())+";"+std::to_string(p3->getBalance())+"\n";
 
     for (int i=0;i<taille_champ;i++){
         if (champ.at(i)!=nullptr){
@@ -419,6 +449,7 @@ void Jeu::sauvegarder(){
 
 void Jeu::charger(){
     std::ifstream save("save.csv");
+    bool pvp=true;
     if (save){
         std::string contenu;
         getline(save,contenu);
@@ -443,9 +474,16 @@ void Jeu::charger(){
             p1=new Player(stoi(j1.at(0)));
             p1->setHp(stoi(j1.at(1)));
             p1->setBalance(stoi(j1.at(2)));
-            p2=new Player(stoi(j2.at(0)));
-            p2->setHp(stoi(j2.at(1)));
-            p2->setBalance(stoi(j2.at(2)));
+            if (stoi(j2.at(0))==2){
+                p2=new Player(stoi(j2.at(0)));
+                p2->setHp(stoi(j2.at(1)));
+                p2->setBalance(stoi(j2.at(2)));
+            }else{
+                p3=new IA();
+                p3->setHp(stoi(j2.at(1)));
+                p3->setBalance(stoi(j2.at(2)));
+                pvp=false;
+            }
 
             while (getline(save,contenu)){
                 std::vector<std::string> unit;
@@ -462,7 +500,8 @@ void Jeu::charger(){
                 Unite* unite;
                 Player* joueur;
                 if (idP==p1->getId()) joueur=p1;
-                else joueur=p2;
+                else if (idP==p2->getId()) joueur=p2;
+                else joueur=p3;
                 if (type=="Fantassin") unite=new Fantassin(joueur);
                 else if (type=="Archer") unite=new Archer(joueur);
                 else if (type=="Catapulte") unite=new Catapulte(joueur);
@@ -471,7 +510,8 @@ void Jeu::charger(){
                 champ.at(pos)=unite;
                 
             }
-            lancerJeu(true);
+            if (pvp) lancerJeu(true);
+            else lancerJeuIa(true);
         }else{
             std::cout<<"Il n'y a pas de partie a charger.\n";
         }

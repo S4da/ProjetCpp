@@ -10,7 +10,7 @@ Player::Player(int i)
 }
 
 std::string Player::print(){ 
-    return "\nPlayer "+std::to_string(id)+ ": \tVie: "+std::to_string(vie)+" \t Gold: "+std::to_string(balance)+"\n\n\n";
+    return "\n\tPlayer "+std::to_string(id)+ ": \tVie: "+std::to_string(vie)+" \t Gold: "+std::to_string(balance)+"\n\n\n";
 }
 
 Player::~Player() {}

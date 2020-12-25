@@ -11,6 +11,7 @@ int IA::jouer(){
 }
 
 int IA::strat1(){
+    std::cout<<getBalance();
     if (getBalance()>=20) return 3;
     else if (getBalance()>=12) return 2;
     else if (getBalance()>=10) return 1;
