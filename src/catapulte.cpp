@@ -32,7 +32,6 @@ void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
     }
     else{
         for (i=pos+getRangeMin();i<=pos+getRangeMax();i++){
-            std::cout<<i;
             if (i==taille_champ-dist){
                 chateauTrouve=true;
                 break;
@@ -55,7 +54,6 @@ void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
             t1=i;
             t2=i+pas;
         }
-        std::cout<<"attaque "<<t1<<" et "<<t2<<std::endl;
         this->attaque(champ.at(t1));
         if (t2==taille_champ-dist && champ.at(t2)==nullptr) ennemi->damage(this->getAtk());
         else this->attaque(champ.at(t2));

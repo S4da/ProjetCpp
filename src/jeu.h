@@ -15,6 +15,7 @@ class Jeu{
         Player *inactive_player;
         Player* p1;
         Player* p2;
+        Player* p3;
         int remuneration=8;
         bool fin=false;
         int cpt=-1;
@@ -30,9 +31,10 @@ class Jeu{
         void lancerJeu(bool continu=false);
         void debutJeu();
         void sauvegarder();
-        void lancerJeuIa();
+        void lancerJeuIa(bool continu=false);
         void afficherMap();
         void achat();
+        void achatIA();
         void lanceAction1();
         void lanceAction2();
         void lanceAction3();

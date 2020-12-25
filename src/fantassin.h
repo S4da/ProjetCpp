@@ -13,7 +13,7 @@ class Fantassin: public Unite{
         std::string getUnit() { return "F";};
         void action1(int pos, std::vector<Unite*> &champ, Player* ennemi);
         void action3(int pos, std::vector<Unite*> &champ, Player* ennemi);
-        void afficherDevientSS(int pos) { std::cout<< "\nL'unite a la position "<<pos<<" devient un Super Soldat.";};
+        void afficherDevientSS(int pos) { std::cout<<"\nL'unite a la position "<<pos<<" devient un Super Soldat.";};
 };
 
  #endif

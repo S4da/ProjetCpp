@@ -3,7 +3,18 @@
 #include "ia.h"
 
 
-IA::IA():Player(-1){
+IA::IA():Player(3){
+}
+
+int IA::jouer(){
+    return strat1();
+}
+
+int IA::strat1(){
+    if (getBalance()>=20) return 3;
+    else if (getBalance()>=12) return 2;
+    else if (getBalance()>=10) return 1;
+    else return 4;
 }
 
 IA::~IA(){}

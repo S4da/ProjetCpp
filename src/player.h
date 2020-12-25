@@ -14,7 +14,7 @@ class Player{
         Player(int i);
         virtual ~Player();
         bool aPerdu() { return vie <= 0;};
-        std::string print();
+        virtual std::string print();
         void addOr(int montant){ balance+=montant;};
         int getBalance() { return balance;};
         int getId() { return id;};
@@ -25,6 +25,7 @@ class Player{
         void setBalance(int argent) { balance=argent;};
         bool operator==(Player* player) { return this->getId()==player->getId();};
         bool operator!=(Player* player) { return this->getId()!=player->getId();};
+        virtual int jouer(){ return 0;};
         //virtual void joue();
 };
 

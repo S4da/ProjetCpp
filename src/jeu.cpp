@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
+#include <unistd.h>
 #include "jeu.h"
 #include "ia.h"
 #include "archer.h"
@@ -19,7 +20,7 @@ void Jeu::debutJeu(){
     system("clear");
     p1=new Player(1);
     p2=new Player(2);
-    IA ai=IA();
+    p3=new IA();
     std::cout<< colorTitre+"\n   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
                 " /$$__  $$ /$$__  $$| $$_____/       /$$__  $$| $$_____/      | $$  /$ | $$ /$$__  $$| $$__  $$ \n "
                 "| $$  \\ $$| $$  \\__/| $$            | $$  \\ $$| $$            | $$ /$$$| $$| $$  \\ $$| $$  \\ $$\n "
@@ -43,6 +44,7 @@ void Jeu::debutJeu(){
 
 
 void Jeu::lancerJeu(bool continu){
+
     bool continuGame=continu;
 
     while(cpt<2*tourMax){
@@ -100,9 +102,77 @@ void Jeu::lancerJeu(bool continu){
 
 
 
-void Jeu::lancerJeuIa(){
+void Jeu::lancerJeuIa(bool continu){
+    
+    bool continuGame=continu;
     active_player=p1;
+    inactive_player=p3;
+    while(cpt<2*tourMax){
+        if (!continuGame) cpt++;
+        system("clear");
+        if (cpt%2==0){
+            active_player=p1;
+            inactive_player=p3;
+            system("clear");
+            std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
+            afficherMap();
+            
+            if (cpt==0) {
+                
+                if (!continuGame)
+                {
+                    active_player->addOr(remuneration);
+                }else continuGame=false;
+                achat();
+                if (fin) break;
+                
+            }
+            else{
+                if (!continuGame){
+                    active_player->addOr(remuneration);
+                    lanceAction1();
+                    lanceAction2();
+                    lanceAction3();
+                    checkMort();
+                }
+                else continuGame=false;
+                std::cout<<std::endl<<std::endl;
+                afficherMap();
+                if (inactive_player->aPerdu()) break;
+                achat();
+                if (fin) break;
+            }
+        }else{
+            active_player=p3;
+            inactive_player=p1;
+            system("clear");
+            std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
+            afficherMap();
+            lanceAction1();
+            lanceAction2();
+            lanceAction3();
+            checkMort();
+            std::cout<<std::endl;
+            afficherMap();
+            std::cout<<std::endl<<std::endl;
+            if (inactive_player->aPerdu()) break;
+            sleep(2);
+            achatIA();
+        }
+    }
+    if (p1->aPerdu() || p3->aPerdu()){
+            std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
+            std::string fini;
+            std::cin>>fini;
+            std::ofstream fichier("save.txt");
+            fichier<<"vide";
+            fichier.close();
+        } else if (fin){
+            /* faire des trucs*/
+            sauvegarder();
+        }
 }
+
 
 void Jeu::achat(){
     int tour=0;
@@ -164,6 +234,29 @@ void Jeu::achat(){
         }
     }
 }
+
+void Jeu::achatIA(){
+    int tour=taille_champ-1;
+    Unite* choix;
+    if (champ.at(tour)==nullptr) {
+        
+        int choixAchat=p3->jouer();
+        bool achete=true;
+        if (choixAchat==1){
+        choix=new Fantassin(active_player);
+        }else if (choixAchat==2){
+            choix=new Archer(active_player);
+        }else if (choixAchat==3){
+            choix=new Catapulte(active_player);
+        }else achete=false;
+        if (achete) 
+        {
+            champ.at(tour)=choix;
+            p3->payer(choix->getPrix());
+        }
+    }
+}
+
 
 void Jeu::afficherMap(){    
     std::string res="";
@@ -319,13 +412,13 @@ void Jeu::sauvegarder(){
             save+=std::to_string(champ.at(i)->getPlayer()->getId())+";"+std::to_string(champ.at(i)->getHp())+";"+champ.at(i)->getType()+";"+std::to_string(i)+"\n";
         }
     }
-    std::ofstream fichier("save.txt");
+    std::ofstream fichier("save.csv");
     fichier<<save;
     fichier.close();
 }
 
 void Jeu::charger(){
-    std::ifstream save("save.txt");
+    std::ifstream save("save.csv");
     if (save){
         std::string contenu;
         getline(save,contenu);
