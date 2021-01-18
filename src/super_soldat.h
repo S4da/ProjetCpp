@@ -9,7 +9,13 @@ class SuperSoldat: public Fantassin{
         SuperSoldat(int pv,Player* player);
         ~SuperSoldat();
         void setHp(int vie) { Fantassin::setHp(vie);};
-        std::string getUnit() { return "S";};
+        std::string getUnitp11() { return "o  ";};
+        std::string getUnitp12() { return "|//";};
+        std::string getUnitp13() { return "ʌ  ";};
+
+        std::string getUnitp21() { return "  o";};
+        std::string getUnitp22() { return "\\\\|";};
+        std::string getUnitp23() { return "  ʌ";};
         void action3(int pos, std::vector<Unite*> &champ, Player* ennemi);
 };
 

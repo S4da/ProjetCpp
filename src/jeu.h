@@ -18,7 +18,7 @@ class Jeu{
         Player* p3;
         int remuneration=8;
         bool fin=false;
-        int cpt=-1;
+        int cptTour=-1;
         std::string colorTitre="\033[1;31m";
         std::string colorP1Deb="\033[36m";
         std::string colorP2Deb="\033[33m";

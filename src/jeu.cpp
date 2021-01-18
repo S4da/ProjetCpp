@@ -54,10 +54,12 @@ void Jeu::debutJeu(){
 void Jeu::lancerJeu(bool continu){
 
     bool continuGame=continu;
+    std::string affPlayer="";
+    float interv=1;
 
-    while(cpt<2*tourMax){
-        if (!continuGame) cpt++;
-        if (cpt%2==0){
+    while(cptTour<2*tourMax){
+        if (!continuGame) cptTour++;
+        if (cptTour%2==0){
             active_player=p1;
             inactive_player=p2;
         } 
@@ -71,11 +73,14 @@ void Jeu::lancerJeu(bool continu){
         {
             active_player->addOr(remuneration);
         }
-        if (active_player==p1)std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
-        else std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
+
+        if (active_player==p1)affPlayer="\n"+colorP1DebBold+active_player->print()+colorFin;
+        else affPlayer="\n"+colorP2DebBold+active_player->print()+colorFin;
+
+        std::cout<<affPlayer;
         afficherMap();
 
-        if (cpt==0) {
+        if (cptTour==0) {
             if (continuGame)
             {
                 continuGame=false;
@@ -86,12 +91,30 @@ void Jeu::lancerJeu(bool continu){
         else{
             if (!continuGame){
                 lanceAction1();
+                system("clear");
+                std::cout<<affPlayer;
+                afficherMap();
+                sleep(interv);
+
                 lanceAction2();
+                system("clear");
+                std::cout<<affPlayer;
+                afficherMap();
+                sleep(interv);
+
                 lanceAction3();
+                system("clear");
+                std::cout<<affPlayer;
+                afficherMap();
+                sleep(interv);
+
                 checkMort();
             }
             else continuGame=false;
             std::cout<<std::endl<<std::endl;
+            system("clear");
+             if (active_player==p1)std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
+            else std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
             afficherMap();
             if (p1->aPerdu() || p2->aPerdu()) break;
             achat();
@@ -114,14 +137,14 @@ void Jeu::lancerJeu(bool continu){
 
 
 void Jeu::lancerJeuIa(bool continu){
-    
+    float interv=0.8;
     bool continuGame=continu;
     active_player=p1;
     inactive_player=p3;
-    while(cpt<2*tourMax){
-        if (!continuGame) cpt++;
+    while(cptTour<2*tourMax){
+        if (!continuGame) cptTour++;
         system("clear");
-        if (cpt%2==0){
+        if (cptTour%2==0){
             active_player=p1;
             inactive_player=p3;
             system("clear");
@@ -132,7 +155,7 @@ void Jeu::lancerJeuIa(bool continu){
             std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
             afficherMap();
             
-            if (cpt==0) {
+            if (cptTour==0) {
                 
                 if (continuGame)
                 {
@@ -145,8 +168,19 @@ void Jeu::lancerJeuIa(bool continu){
             else{
                 if (!continuGame){
                     lanceAction1();
+                    system("clear");
+                    afficherMap();
+                    sleep(interv);
+
                     lanceAction2();
+                    system("clear");
+                    afficherMap();
+                    sleep(interv);
+
                     lanceAction3();
+                    system("clear");
+                    afficherMap();
+                    sleep(interv);
                     checkMort();
                 }
                 else continuGame=false;
@@ -163,12 +197,25 @@ void Jeu::lancerJeuIa(bool continu){
             active_player->addOr(remuneration);
             std::cout<<active_player->getBalance()<< std::endl<<colorP2DebBold+active_player->print()+colorFin;
             afficherMap();
+
             lanceAction1();
+            system("clear");
+            afficherMap();
+            sleep(interv);
+
             lanceAction2();
+            system("clear");
+            afficherMap();
+            sleep(interv);
+
             lanceAction3();
+            system("clear");
+            afficherMap();
+            sleep(interv);
+
             checkMort();
             std::cout<<std::endl;
-            afficherMap();
+            
             std::cout<<std::endl<<std::endl;
             if (inactive_player->aPerdu()) break;
             sleep(1);
@@ -274,11 +321,12 @@ void Jeu::achatIA(){
 
 
 void Jeu::afficherMap(){    
-    std::string res="";
+    std::string res1="", res2="", res3="";
     std::string pv="";
     std::string vide=" ___ ";
-    std::string prems,der;
+    std::string prems1,prems2,prems3,der1,der3,der2;
     std::string pvPrems,pvDer;
+    std::string normeEspace= "     ";
     std::string pvP1="   ",pvP2="   ";
 
     if (inactive_player==p3 || active_player==p3){
@@ -296,32 +344,48 @@ void Jeu::afficherMap(){
     for (int i=0;i<taille_champ;i++){
         if (champ.at(i)==nullptr) {
             if (i==0) {
-                prems="     ";
+                prems1="     ";
+                prems2="     ";
+                prems3="     ";
                 pvPrems="     ";
             }
             else if (i==taille_champ-1) {
-                der="     ";
+                der1="     ";
+                der2="     ";
+                der3="     ";
                 pvDer="     ";
             }
             else 
             {
-                res+=vide;
+                res1+=normeEspace;
+                res2+=normeEspace;
+                res3+=vide;
                 pv+= "     ";
             }
         }
         else{
             if (champ.at(i)->getPlayer()==p1){
                 if (i==0) {
-                    prems=" _"+champ[i]->getUnit()+"- ";
-                    prems=colorP1DebBold+prems+colorFin;
+                    prems1=colorP1DebBold+"  "+champ[i]->getUnitp11()+""+colorFin;
+                    prems2=colorP1DebBold+" "+champ[i]->getUnitp12()+" "+colorFin;
+                    prems3=colorP1DebBold+""+champ[i]->getUnitp13()+"  "+colorFin;
                 }
-                else res+= colorP1DebBold+" _"+champ[i]->getUnit()+"- "+colorFin;
+                else {
+                    res1+= colorP1DebBold+" "+champ[i]->getUnitp11()+" "+colorFin;
+                    res2+= colorP1DebBold+" "+champ[i]->getUnitp12()+" "+colorFin;
+                    res3+= colorP1DebBold+" "+champ[i]->getUnitp13()+" "+colorFin;
+                }
             }else {
                 if (i==taille_champ-1) {
-                    der= " -"+champ[i]->getUnit()+"_ ";
-                    der=colorP2DebBold+der+colorFin;
+                    der1=colorP2DebBold+" "+champ[i]->getUnitp21()+" "+colorFin;
+                    der2=colorP2DebBold+" "+champ[i]->getUnitp22()+" "+colorFin;
+                    der3=colorP2DebBold+"  "+champ[i]->getUnitp23()+""+colorFin;
                 }
-                else res+= colorP2DebBold+" -"+champ[i]->getUnit()+"_ "+colorFin;
+                else {
+                    res1+= colorP2DebBold+" "+champ[i]->getUnitp21()+" "+colorFin;
+                    res2+= colorP2DebBold+" "+champ[i]->getUnitp22()+" "+colorFin;
+                    res3+= colorP2DebBold+" "+champ[i]->getUnitp23()+" "+colorFin;
+                }
             }
             if (champ.at(i)->getHp()!=0) {
                 std::string pvCourant="";
@@ -348,10 +412,13 @@ void Jeu::afficherMap(){
                         colorP1Deb+" |   |   ///|\\\\\\   |  -|"+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   ///|\\\\\\   |  -|"+colorFin+"\n"+
                         colorP1Deb+" |   |   |||||||   |-  |   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |   |   |||||||   |-  |"+colorFin+"\n"+
                         colorP1Deb+" |___|___| "+colorP1DebBold+ +"P1-"+colorFin+colorP1Deb+" |___|___|   "+colorFin+  "\t\t\t    "   +colorP2Deb+          " |___|___| "+colorP2DebBold+ "-P2"+colorFin+colorP2Deb+" |___|___|"+colorFin+"\n"+
-                        colorP1Deb+"         (      (          "+colorFin+  "\t\t\t    "   +colorP2Deb+          "         )      )"+colorFin+"\n"+
-                        colorP1Deb+"          \\"+colorFin+prems+colorP1Deb+" \\       "+colorFin+  "\t\t\t    " +colorP2Deb+ "        / "+colorFin+ der+colorP2Deb+"/"+colorFin+"\n"+
-                        colorP1Deb+"           )"+colorFin+pvPrems+colorP1Deb+" )        "+colorFin+  "\t\t\t    "  +colorP2Deb+           "       ( "+colorFin+pvDer+colorP2Deb+"("+colorFin+"\n"
-                        "              "+ res +      "         \n"
+                        colorP1Deb+"         ("+colorFin+prems1+colorP1Deb+"(          "+colorFin+  "\t\t\t    "   +colorP2Deb+          "         )"+colorFin+ der1+colorP2Deb+")"+colorFin+"\n"+
+                        colorP1Deb+"          \\"+colorFin+prems2+colorP1Deb+" \\       "+colorFin+  "\t\t\t    " +colorP2Deb+ "        / "+colorFin+ der2+colorP2Deb+"/"+colorFin+"\n"+
+                        colorP1Deb+"           )"+colorFin+prems3+colorP1Deb+" )        "+colorFin+  "\t\t\t    "  +colorP2Deb+           "       ( "+colorFin+ der3+colorP2Deb+"("+colorFin+"\n"+
+                        colorP1Deb+"           )"+colorFin+pvPrems+colorP1Deb+" )        "+colorFin+  "\t\t\t    "  +colorP2Deb+           "       ( "+colorFin+pvDer+colorP2Deb+"("+colorFin+"\n\n"
+                        "              "+ res1 +      "         \n"
+                        "              "+ res2 +      "         \n"
+                        "              "+ res3 +      "         \n"
                         "              "+pv;
     std::cout<<retour;
 }
@@ -432,7 +499,7 @@ void Jeu::checkMort(){
 
 void Jeu::sauvegarder(){
     std::string save="";
-    save+=std::to_string(cpt)+"\n";
+    save+=std::to_string(cptTour)+"\n";
     save+=std::to_string(p1->getId())+";"+std::to_string(p1->getVie())+";"+std::to_string(p1->getBalance())+"\n";
     if (inactive_player==p2 || active_player==p2) save+=std::to_string(p2->getId())+";"+std::to_string(p2->getVie())+";"+std::to_string(p2->getBalance())+"\n";
     else save+=std::to_string(p3->getId())+";"+std::to_string(p3->getVie())+";"+std::to_string(p3->getBalance())+"\n";
@@ -455,7 +522,7 @@ void Jeu::charger(){
         getline(save,contenu);
         if (contenu!="vide"){
             std::string mot;
-            cpt=stoi(contenu);
+            cptTour=stoi(contenu);
 
             getline(save,contenu); 
             std::vector<std::string> j1;
@@ -516,6 +583,10 @@ void Jeu::charger(){
             std::cout<<"Il n'y a pas de partie a charger.\n";
         }
     }else std::cout<<"Il n'y a pas de partie a charger.\n";
+}
+
+void Jeu::damage(int pos, int dng){
+
 }
 
 

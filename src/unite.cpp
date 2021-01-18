@@ -27,7 +27,7 @@ void Unite::action2(int pos, std::vector<Unite*> &champ, Player* ennemi){
     if (pos!=taille_champ-dist && champ.at(pos+pas)==nullptr) {
         champ.at(pos+pas)=this;
         champ.at(pos)=nullptr;
-        afficherActionAvance(pos);
+        //afficherActionAvance(pos);
     }
 }
 

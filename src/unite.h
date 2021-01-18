@@ -18,7 +18,13 @@ class Unite{
         Unite(int prix, int pv, int rangeMin, int rangeMax,int atk,Player* player);
         virtual ~Unite();
         virtual void setHp(int vie) { pv=vie;};
-        virtual std::string getUnit() =0;
+        virtual std::string getUnitp11()=0;
+        virtual std::string getUnitp12() =0;
+        virtual std::string getUnitp13() =0;
+
+        virtual std::string getUnitp21() =0;
+        virtual std::string getUnitp22() =0;
+        virtual std::string getUnitp23() =0;
         int getPrix() {return prix;};
         Player* getPlayer() {return player;};
         void damage(int dmg) { pv-=dmg;};

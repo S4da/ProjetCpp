@@ -9,7 +9,13 @@ class Archer: public Unite{
     public:
         Archer(Player* player);
         ~Archer();
-        std::string getUnit() { return "A";};
+        std::string getUnitp21() { return "  o";};
+        std::string getUnitp22() { return "-(|";};
+        std::string getUnitp23() { return "  ʌ";};
+
+        std::string getUnitp11() { return "o  ";};
+        std::string getUnitp12() { return "|)-";};
+        std::string getUnitp13() { return "ʌ  ";};
         void action1(int pos, std::vector<Unite*> &champ, Player* ennemi);
 
 };
