@@ -189,7 +189,9 @@ void Jeu::lancerJeuIa(bool continu){
             std::cout<<active_player->getBalance()<< std::endl<<colorP2DebBold+active_player->print()+colorFin;
             afficherMap();
             lanceAction1();
+            checkMort();
             lanceAction2();
+            checkMort();
             lanceAction3();
             checkMort();
             std::cout<<std::endl;
