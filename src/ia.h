@@ -12,7 +12,8 @@ class IA: public Player{
         int jouer();
         int strat1();
         //void joue();
-        
+        int stratRandom();
+        int stratMostDmg();
 };
 
  #endif

@@ -24,3 +24,11 @@
   o 
   |)-
   ʌ 
+
+
+
+  manuel d'utlisation: coment faire quoi: compil lancement
+                                        touches
+  diagramme de classes
+
+  description: sauvegarge

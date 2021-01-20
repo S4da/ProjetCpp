@@ -6,7 +6,7 @@ Player::Player(int i)
 {
     vie=100;
     id=i;
-    balance=20;
+    balance=10;
 }
 
 std::string Player::print(){ 

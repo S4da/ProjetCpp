@@ -32,9 +32,10 @@ void Jeu::debutJeu(){
                     "| $$__  $$| $$|_  $$| $$__/         | $$  | $$| $$__/         | $$$$_  $$$$| $$__  $$| $$__  $$\n "
                     "| $$  | $$| $$  \\ $$| $$            | $$  | $$| $$            | $$$/ \\  $$$| $$  | $$| $$  \\ $$\n "
                     "| $$  | $$|  $$$$$$/| $$$$$$$$      |  $$$$$$/| $$            | $$/   \\  $$| $$  | $$| $$  | $$\n "
-                    "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/\n "+colorFin;
+                    "|__/  |__/ \\______/ |________/       \\______/ |__/            |__/     \\__/|__/  |__/|__/  |__/ :RIP OFF\n "+colorFin;
         
-        std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Sortie \t\t 4) Charger\n";
+        std::cout<<"\n 1) Joueur VS Joueur \t\t 2) Joueur VS IA \t\t 3) Charger \t\t 9) Sortie\n";
+        std::cout<<"\n 4) One Shot (Mode PVP ou chaque joueur ne possede qu'1 point de vie)\n";
         
         
         std::cin>>tryRep;
@@ -42,11 +43,15 @@ void Jeu::debutJeu(){
             rep=stoi(tryRep);
             if (rep==1) lancerJeu();
             else if (rep==2) lancerJeuIa();
-            else if (rep==4) {
-                charger();
+            else if (rep==3) {
+                rep=charger();
+            }else if (rep==4){
+                p1->setHp(1);
+                p2->setHp(1);
+                lancerJeu();
             }
         }catch(...){}
-    }while(rep<1 || rep>4);
+    }while((rep<1 || rep>4) && rep!=9);
     //system("clear");
 }
 
@@ -55,7 +60,7 @@ void Jeu::lancerJeu(bool continu){
 
     bool continuGame=continu;
     std::string affPlayer="";
-    float interv=1;
+    std::string next;
 
     while(cptTour<2*tourMax){
         if (!continuGame) cptTour++;
@@ -68,6 +73,7 @@ void Jeu::lancerJeu(bool continu){
             inactive_player=p1;
         }
         
+        system("clear");
         system("clear");
         if (!continuGame)
         {
@@ -91,27 +97,16 @@ void Jeu::lancerJeu(bool continu){
         else{
             if (!continuGame){
                 lanceAction1();
-                system("clear");
-                std::cout<<affPlayer;
-                afficherMap();
-                sleep(interv);
-
                 lanceAction2();
-                system("clear");
-                std::cout<<affPlayer;
-                afficherMap();
-                sleep(interv);
-
                 lanceAction3();
-                system("clear");
-                std::cout<<affPlayer;
-                afficherMap();
-                sleep(interv);
-
                 checkMort();
             }
             else continuGame=false;
-            std::cout<<std::endl<<std::endl;
+            
+            std::cout<<"\n\nEntrez nimporte quoi pour finir de voir vos actions: ";
+            std::cin>>next;
+            //std::cout<<std::endl<<std::endl;
+            system("clear");
             system("clear");
              if (active_player==p1)std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
             else std::cout<<std::endl<<colorP2DebBold+active_player->print()+colorFin;
@@ -128,7 +123,7 @@ void Jeu::lancerJeu(bool continu){
         std::ofstream fichier("save.txt");
         fichier<<"vide";
         fichier.close();
-    } else if (fin){
+    } else if (fin && goSave){
         /* faire des trucs*/
         sauvegarder();
     }
@@ -137,16 +132,18 @@ void Jeu::lancerJeu(bool continu){
 
 
 void Jeu::lancerJeuIa(bool continu){
-    float interv=0.8;
     bool continuGame=continu;
     active_player=p1;
     inactive_player=p3;
+    std::string next;
     while(cptTour<2*tourMax){
         if (!continuGame) cptTour++;
+        system("clear");
         system("clear");
         if (cptTour%2==0){
             active_player=p1;
             inactive_player=p3;
+            system("clear");
             system("clear");
             if (!continuGame)
             {
@@ -168,23 +165,17 @@ void Jeu::lancerJeuIa(bool continu){
             else{
                 if (!continuGame){
                     lanceAction1();
-                    system("clear");
-                    afficherMap();
-                    sleep(interv);
-
                     lanceAction2();
-                    system("clear");
-                    afficherMap();
-                    sleep(interv);
-
                     lanceAction3();
-                    system("clear");
-                    afficherMap();
-                    sleep(interv);
                     checkMort();
                 }
                 else continuGame=false;
-                std::cout<<std::endl<<std::endl;
+                std::cout<<"\n\nEntrez nimporte quoi pour finir de voir vos actions: ";
+                std::cin>>next;
+                system("clear");
+                system("clear");
+                //std::cout<<std::endl<<std::endl;
+                std::cout<<std::endl<<colorP1DebBold+active_player->print()+colorFin;
                 afficherMap();
                 if (inactive_player->aPerdu()) break;
                 achat();
@@ -197,28 +188,14 @@ void Jeu::lancerJeuIa(bool continu){
             active_player->addOr(remuneration);
             std::cout<<active_player->getBalance()<< std::endl<<colorP2DebBold+active_player->print()+colorFin;
             afficherMap();
-
             lanceAction1();
-            system("clear");
-            afficherMap();
-            sleep(interv);
-
             lanceAction2();
-            system("clear");
-            afficherMap();
-            sleep(interv);
-
             lanceAction3();
-            system("clear");
-            afficherMap();
-            sleep(interv);
-
             checkMort();
             std::cout<<std::endl;
-            
             std::cout<<std::endl<<std::endl;
             if (inactive_player->aPerdu()) break;
-            sleep(1);
+            sleep(2);
             achatIA();
         }
     }
@@ -229,7 +206,7 @@ void Jeu::lancerJeuIa(bool continu){
             std::ofstream fichier("save.txt");
             fichier<<"vide";
             fichier.close();
-        } else if (fin){
+        } else if (fin && goSave){
             /* faire des trucs*/
             sauvegarder();
         }
@@ -238,7 +215,7 @@ void Jeu::lancerJeuIa(bool continu){
 
 void Jeu::achat(){
     int tour=0;
-    std::string choixAction=" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder et quitter";
+    std::string choixAction=" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder et quitter \t 6) Quitter sans sauvegarder";
     if (active_player->getId()<inactive_player->getId()) tour=0;
     else tour=taille_champ-1;
     std::cout<<"\n\n";
@@ -261,9 +238,9 @@ void Jeu::achat(){
                 choixAchat=-1;
             }
             
-            while (choixAchat<1 || choixAchat>5)
+            while (choixAchat<1 || choixAchat>6)
             {
-                std::cout<<" ! Vous devez choisir entre 1, 2, 3, 4 et 5 !"<<std::endl;
+                std::cout<<" ! Vous devez choisir entre 1, 2, 3, 4, 5 et 6 !"<<std::endl;
                 std::cout<<choixAction<<std::endl;
                 std::cin>>entree;
                 try{
@@ -275,7 +252,13 @@ void Jeu::achat(){
             if (choixAchat==4) { break;}
             else if (choixAchat==5) {
                  fin=true;
-                 break;}
+                 goSave=true;
+                 break;
+                 }
+            else if (choixAchat==6) {
+                fin=true;
+                break;
+                }
             else {
                 if (choixAchat==1){
                 choix=new Fantassin(active_player);
@@ -330,15 +313,18 @@ void Jeu::afficherMap(){
     std::string pvP1="   ",pvP2="   ";
 
     if (inactive_player==p3 || active_player==p3){
-        if (p3->getVie()<100) pvP2=std::to_string(p3->getVie())+" "; 
+        if (p3->getVie()<10) pvP2=" "+std::to_string(p3->getVie())+" ";
+        else if (p3->getVie()<100) pvP2=std::to_string(p3->getVie())+" "; 
         else pvP2=std::to_string(p3->getVie());
         pvP2=colorP2DebBold+pvP2+colorFin;
     }else {
-        if (p2->getVie()<100) pvP2=std::to_string(p2->getVie())+" "; 
-        else pvP2=std::to_string(p3->getVie());
+        if (p2->getVie()<10) pvP2=" "+std::to_string(p2->getVie())+" ";
+        else if (p2->getVie()<100) pvP2=std::to_string(p2->getVie())+" "; 
+        else pvP2=std::to_string(p2->getVie());
         pvP2=colorP2DebBold+pvP2+colorFin;
     }
-    if (p1->getVie()<100) pvP1=std::to_string(p1->getVie())+" ";
+    if (p1->getVie()<10) pvP1=" "+std::to_string(p1->getVie())+" ";
+    else if (p1->getVie()<100) pvP1=std::to_string(p1->getVie())+" ";
     else pvP1=std::to_string(p1->getVie()); 
     pvP1=colorP1DebBold+pvP1+colorFin;
     for (int i=0;i<taille_champ;i++){
@@ -509,13 +495,13 @@ void Jeu::sauvegarder(){
             save+=std::to_string(champ.at(i)->getPlayer()->getId())+";"+std::to_string(champ.at(i)->getHp())+";"+champ.at(i)->getType()+";"+std::to_string(i)+"\n";
         }
     }
-    std::ofstream fichier("save.csv");
+    std::ofstream fichier("./save/save.csv");
     fichier<<save;
     fichier.close();
 }
 
-void Jeu::charger(){
-    std::ifstream save("save.csv");
+int Jeu::charger(){
+    std::ifstream save("./save/save.csv");
     bool pvp=true;
     if (save){
         std::string contenu;
@@ -583,11 +569,10 @@ void Jeu::charger(){
             std::cout<<"Il n'y a pas de partie a charger.\n";
         }
     }else std::cout<<"Il n'y a pas de partie a charger.\n";
+    sleep(2);
+    return -1;
 }
 
-void Jeu::damage(int pos, int dng){
-
-}
 
 
 Jeu::~Jeu(){

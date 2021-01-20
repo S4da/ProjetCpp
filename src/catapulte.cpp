@@ -57,17 +57,18 @@ void Catapulte::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
         this->attaque(champ.at(t1));
         if (t2==taille_champ-dist && champ.at(t2)==nullptr) ennemi->damage(this->getAtk());
         else this->attaque(champ.at(t2));
+        afficherActionAtk(pos);
         act1Fait=true;
     } else if (i==taille_champ-dist) {
         if (i==pos+(getRangeMax()*pas)){
-            //afficherActionAtk(pos);
+            afficherActionAtk(pos);
             this->attaque(champ.at(i-pas));
             if (champ.at(i)!=nullptr) this->attaque(champ.at(i));
             else ennemi->damage(this->getAtk());
         }else{ // ce else n'est pas utile car dans les regles actuelles
         // la catapulte ne peut pas s'approcher a moins de 4 cases de la tour
         // adverses, mais on sait jamais.
-            //afficherActionAtk(pos);
+            afficherActionAtk(pos);
             ennemi->damage(this->getAtk());
         }
         act1Fait=true;
@@ -84,7 +85,7 @@ void Catapulte::action3(int pos, std::vector<Unite*> &champ, Player* ennemi){
             dist=taille_champ-getRangeMin();
         } 
         if (pos!=taille_champ-dist && champ.at(pos+pas)==nullptr) {
-            //afficherActionAvance(pos);
+            afficherActionAvance(pos);
             champ.at(pos+pas)=this;
             champ.at(pos)=nullptr;
         }

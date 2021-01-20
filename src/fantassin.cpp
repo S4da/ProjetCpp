@@ -29,7 +29,7 @@ void Fantassin::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
             }
         }
         else {
-            //afficherActionAtk(pos);
+            afficherActionAtk(pos);
             ennemi->damage(this->getAtk());
         }
         act1Fait=true;

@@ -40,7 +40,7 @@ void Archer::action1(int pos, std::vector<Unite*> &champ, Player* ennemi){
     }
     if (ennemiTrouve)
     {   
-        //afficherActionAtk(pos);
+        afficherActionAtk(pos);
         this->attaque(champ.at(i));
     }else if (i==taille_champ-dist) {
         afficherActionAtk(pos);

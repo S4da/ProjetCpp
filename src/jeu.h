@@ -18,6 +18,7 @@ class Jeu{
         Player* p3;
         int remuneration=8;
         bool fin=false;
+        bool goSave=false;
         int cptTour=-1;
         std::string colorTitre="\033[1;31m";
         std::string colorP1Deb="\033[36m";
@@ -40,7 +41,7 @@ class Jeu{
         void lanceAction3();
         void checkMort();
         void sauvegarder(int cpt);
-        void charger();
+        int charger();
 };
 
  #endif
