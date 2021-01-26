@@ -20,6 +20,7 @@ class Jeu{
         bool fin=false;
         bool goSave=false;
         int cptTour=-1;
+        std::string saveName="./save/save.csv";
         std::string colorTitre="\033[1;31m";
         std::string colorP1Deb="\033[36m";
         std::string colorP2Deb="\033[33m";
@@ -42,6 +43,7 @@ class Jeu{
         void checkMort();
         void sauvegarder(int cpt);
         int charger();
+        void resetPlateau();
 };
 
  #endif

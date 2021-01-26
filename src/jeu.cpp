@@ -17,12 +17,12 @@ Jeu::Jeu():taille_champ(12),tourMax(100){
 }
 
 void Jeu::debutJeu(){
+
+    std::string tryRep="";
+    int rep=0;
     p1=new Player(1);
     p2=new Player(2);
     p3=new IA();
-    std::string tryRep="";
-    int rep=0;
-
     do{
         system("clear");
         std::cout<< colorTitre+"\n   /$$$$$$   /$$$$$$  /$$$$$$$$        /$$$$$$  /$$$$$$$$       /$$      /$$  /$$$$$$  /$$$$$$$  \n "
@@ -51,7 +51,7 @@ void Jeu::debutJeu(){
                 lancerJeu();
             }
         }catch(...){}
-    }while((rep<1 || rep>4) && rep!=9);
+    }while(rep!=9);
     //system("clear");
 }
 
@@ -120,13 +120,14 @@ void Jeu::lancerJeu(bool continu){
         std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
         std::string fini;
         std::cin>>fini;
-        std::ofstream fichier("save.txt");
+        std::ofstream fichier(saveName);
         fichier<<"vide";
         fichier.close();
     } else if (fin && goSave){
         /* faire des trucs*/
         sauvegarder();
     }
+    resetPlateau();
 }
 
 
@@ -186,7 +187,7 @@ void Jeu::lancerJeuIa(bool continu){
             inactive_player=p1;
             system("clear");
             active_player->addOr(remuneration);
-            std::cout<<active_player->getBalance()<< std::endl<<colorP2DebBold+active_player->print()+colorFin;
+            std::cout<< std::endl<<colorP2DebBold+active_player->print()+colorFin;
             afficherMap();
             lanceAction1();
             checkMort();
@@ -205,13 +206,15 @@ void Jeu::lancerJeuIa(bool continu){
             std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
             std::string fini;
             std::cin>>fini;
-            std::ofstream fichier("save.txt");
+            std::ofstream fichier(saveName);
             fichier<<"vide";
             fichier.close();
+            
         } else if (fin && goSave){
             /* faire des trucs*/
             sauvegarder();
         }
+    resetPlateau();
 }
 
 
@@ -315,17 +318,17 @@ void Jeu::afficherMap(){
     std::string pvP1="   ",pvP2="   ";
 
     if (inactive_player==p3 || active_player==p3){
-        if (p3->getVie()<10) pvP2=" "+std::to_string(p3->getVie())+" ";
+        if (p3->getVie()<10 && p3->getVie()>=0) pvP2=" "+std::to_string(p3->getVie())+" ";
         else if (p3->getVie()<100) pvP2=std::to_string(p3->getVie())+" "; 
         else pvP2=std::to_string(p3->getVie());
         pvP2=colorP2DebBold+pvP2+colorFin;
     }else {
-        if (p2->getVie()<10) pvP2=" "+std::to_string(p2->getVie())+" ";
+        if (p2->getVie()<10 && p2->getVie()>=0) pvP2=" "+std::to_string(p2->getVie())+" ";
         else if (p2->getVie()<100) pvP2=std::to_string(p2->getVie())+" "; 
         else pvP2=std::to_string(p2->getVie());
         pvP2=colorP2DebBold+pvP2+colorFin;
     }
-    if (p1->getVie()<10) pvP1=" "+std::to_string(p1->getVie())+" ";
+    if (p1->getVie()<10 && p1->getVie()>=0) pvP1=" "+std::to_string(p1->getVie())+" ";
     else if (p1->getVie()<100) pvP1=std::to_string(p1->getVie())+" ";
     else pvP1=std::to_string(p1->getVie()); 
     pvP1=colorP1DebBold+pvP1+colorFin;
@@ -497,13 +500,13 @@ void Jeu::sauvegarder(){
             save+=std::to_string(champ.at(i)->getPlayer()->getId())+";"+std::to_string(champ.at(i)->getHp())+";"+champ.at(i)->getType()+";"+std::to_string(i)+"\n";
         }
     }
-    std::ofstream fichier("./save/save.csv");
+    std::ofstream fichier(saveName);
     fichier<<save;
     fichier.close();
 }
 
 int Jeu::charger(){
-    std::ifstream save("./save/save.csv");
+    std::ifstream save(saveName);
     bool pvp=true;
     if (save){
         std::string contenu;
@@ -575,6 +578,15 @@ int Jeu::charger(){
     return -1;
 }
 
+void Jeu::resetPlateau(){
+    p1=new Player(1);
+    p2=new Player(2);
+    p3=new IA();
+    fin=false;
+    goSave=false;
+    for (int i=0;i<taille_champ;i++) champ.at(i)=nullptr;
+    cptTour=-1;
+}
 
 
 Jeu::~Jeu(){
