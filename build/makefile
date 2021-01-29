@@ -11,5 +11,5 @@ main: main.o archer.o unite.o catapulte.o fantassin.o super_soldat.o jeu.o playe
 .PHONY: clean
 
 clean:
-	rm -f *.o *~ core 
+	rm -fr *.o *~ core
 

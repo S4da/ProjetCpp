@@ -5,7 +5,7 @@
 
 int main()
 {
-
+    system("clear");
     Jeu j=Jeu();
     j.debutJeu();
     return 0;

@@ -117,6 +117,8 @@ void Jeu::lancerJeu(bool continu){
         }
     }
     if (p1->aPerdu() || p2->aPerdu()){
+        if (p1->aPerdu()) active_player=p2;
+        else active_player=p1;
         std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
         std::string fini;
         std::cin>>fini;
@@ -203,6 +205,7 @@ void Jeu::lancerJeuIa(bool continu){
         }
     }
     if (p1->aPerdu() || p3->aPerdu()){
+            if (p1->aPerdu()) active_player=p3;
             std::cout<<"\n\nLe joueur "<<active_player->getId()<<" a gagne... bien joue.\n\nEntrez n'importe quoi pour finir !";
             std::string fini;
             std::cin>>fini;
@@ -220,7 +223,7 @@ void Jeu::lancerJeuIa(bool continu){
 
 void Jeu::achat(){
     int tour=0;
-    std::string choixAction=" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder et quitter \t 6) Quitter sans sauvegarder";
+    std::string choixAction=" 1) Fantassin-10 Po \t 2) Archer-12 Po\t 3) Catapultes-20 Po \t 4) rien \t 5) Sauvegarder et quitter \t 6) Quitter sans sauvegarder\n 7) Abandonner";
     if (active_player->getId()<inactive_player->getId()) tour=0;
     else tour=taille_champ-1;
     std::cout<<"\n\n";
@@ -243,9 +246,9 @@ void Jeu::achat(){
                 choixAchat=-1;
             }
             
-            while (choixAchat<1 || choixAchat>6)
+            while (choixAchat<1 || choixAchat>7)
             {
-                std::cout<<" ! Vous devez choisir entre 1, 2, 3, 4, 5 et 6 !"<<std::endl;
+                std::cout<<" ! Vous devez choisir entre 1, 2, 3, 4, 5, 6et 7 !"<<std::endl;
                 std::cout<<choixAction<<std::endl;
                 std::cin>>entree;
                 try{
@@ -264,6 +267,11 @@ void Jeu::achat(){
                 fin=true;
                 break;
                 }
+            else if (choixAchat==7) {
+                fin=true;
+                active_player->setHp(-1);
+                break;
+            }
             else {
                 if (choixAchat==1){
                 choix=new Fantassin(active_player);
